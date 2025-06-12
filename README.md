@@ -108,12 +108,12 @@ You can run Cairn locally, connect it to your repos, use your favorite LLM and e
    ```
 
    ```
-   Step 3: Note your credentials for .env configuration
+   Step 3: Note your credentials for .env and repos.json configuration
    ```
-   You'll need these three values for your `.env` file in the next step:
-   - **App ID**: Your GitHub App ID
-   - **Installation ID**: From the installation URL
-   - **Private Key Path**: Path to your downloaded .pem file
+   You'll need these three values for your configuration:
+   - **App ID**: Goes in your `.env` file.
+   - **Private Key Path**: Path to your downloaded .pem file, goes in your `.env` file.
+   - **Installation ID**: Goes in the `repos.json` file.
 
    ```
    ⚠️  Security: Keep your .pem file secure and never commit it to version control
@@ -121,7 +121,7 @@ You can run Cairn locally, connect it to your repos, use your favorite LLM and e
    ```
 
 
-3. **Configure environment variables**
+3. **Configure environment variables and repositories**
    ```bash
    # Copy the example environment file
    cp .env.example .env
@@ -129,21 +129,32 @@ You can run Cairn locally, connect it to your repos, use your favorite LLM and e
 
    Edit your `.env` file with the following configuration:
    ```bash
-   # GitHub App credentials (from Step 3 above)
+   # GitHub App credentials
    GITHUB_APP_ID=your_app_id_here
-   GITHUB_INSTALLATION_ID=your_installation_id_here
    GITHUB_PRIVATE_KEY_PATH=your_private_key_file.pem
 
    # Anthropic API key (REQUIRED) - Get from https://console.anthropic.com/
    ANTHROPIC_API_KEY=your_anthropic_api_key_here
    ANTHROPIC_MODEL_NAME=claude-sonnet-4-20250514
-
-   # Connected repositories - Format: "owner/repo-name,owner/repo-name" (comma-separated, no spaces)
-   # Examples:
-   CONNECTED_REPOS="john-doe/my-frontend,john-doe/my-backend"
-   # Or for a single repository:
-   # CONNECTED_REPOS="mycompany/main-project"
    ```
+
+   Create a `repos.json` file in the root of the project with the following structure. Add an entry for each repository you want to connect.
+    ```json
+    {
+      "connected_repos": [
+        {
+          "name": "your-repo-name",
+          "owner": "your-github-username-or-org",
+          "installation_id": 12345678
+        },
+        {
+          "name": "another-repo",
+          "owner": "your-github-username-or-org",
+          "installation_id": 87654321
+        }
+      ]
+    }
+    ```
 ---
 
 ### 🏃 Running Cairn

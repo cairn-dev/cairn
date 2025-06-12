@@ -1,0 +1,15 @@
+{
+  "connected_repos": [
+    {
+      "name": "your-repo-name",
+      "owner": "your-github-username-or-org",
+      "installation_id": 12345678
+    },
+    {
+      "name": "another-repo",
+      "owner": "your-github-username-or-org",
+      "installation_id": 87654321
+    }
+  ]
+} 
+

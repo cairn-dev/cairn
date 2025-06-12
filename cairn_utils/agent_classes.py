@@ -460,14 +460,14 @@ class ExplorerToolBox(DefaultToolBox):
         return generate_output, function_name, function_schema, description
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    owner = "cairn-dev"
-    repo = "test"
-    installation_id = 65037960
-    jwt_token = generate_jwt()
-    installtion_token = asyncio.run(get_installation_token(jwt_token, installation_id))
-    toolbox = ExplorerToolBox(
-        owner=owner, repos=[repo], installation_id=installation_id
-    )
-    print(toolbox.get_all_tools()[0]["description"])
+#     owner = "cairn-dev"
+#     repo = "test"
+#     installation_id = 65037960
+#     jwt_token = generate_jwt()
+#     installtion_token = asyncio.run(get_installation_token(jwt_token, installation_id))
+#     toolbox = ExplorerToolBox(
+#         owner=owner, repos=[repo], installation_id=installation_id
+#     )
+#     print(toolbox.get_all_tools()[0]["description"])

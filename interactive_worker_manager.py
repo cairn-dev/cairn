@@ -64,10 +64,15 @@ class WorkerManager:
         self.running_tasks = {}  # Track worker processes instead of asyncio tasks
         self.task_storage = TaskStorage()
 
-        # Parse connected repos
-        connected_repos_str = os.getenv("CONNECTED_REPOS", "")
-        logger.info(f"Raw CONNECTED_REPOS value: '{connected_repos_str}'")
-        self.connected_repos = self._parse_connected_repos(connected_repos_str)
+        # Load and parse repos.json
+        try:
+            with open("repos.json", "r") as f:
+                repo_data = json.load(f).get("connected_repos", [])
+                self.connected_repos = self._parse_connected_repos(repo_data)
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            logger.error(f"Could not load or parse repos.json: {e}")
+            self.connected_repos = []
+
         logger.info(f"Parsed repositories: {self.connected_repos}")
 
         # Get owner from first repo (assuming all repos have same owner)
@@ -83,23 +88,24 @@ class WorkerManager:
         self.task_storage.add_debug_message(formatted_message)
         logger.debug(message)
 
-    def _parse_connected_repos(self, repos_str: str) -> List[Tuple[str, str]]:
-        """Parse the CONNECTED_REPOS string into a list of (owner, repo) tuples"""
-        if not repos_str:
-            print("Warning: CONNECTED_REPOS is empty in .env.local")
+    def _parse_connected_repos(self, repo_data: List[dict]) -> List[Tuple[str, str]]:
+        """Parse data from repos.json into a list of (owner, repo) tuples"""
+        if not repo_data:
+            print("Warning: connected_repos in repos.json is empty or not found.")
             return []
 
         repos = []
-        for repo_str in repos_str.split(','):
-            if '/' in repo_str:
-                owner, repo = repo_str.strip().split('/')
+        for repo_info in repo_data:
+            owner = repo_info.get("owner")
+            repo = repo_info.get("name")
+            if owner and repo:
                 print(f"Found repository: {owner}/{repo}")
                 repos.append((owner, repo))
             else:
-                print(f"Warning: Invalid repository format in CONNECTED_REPOS: {repo_str}")
+                print(f"Warning: Invalid repository format in repos.json: {repo_info}")
 
         if not repos:
-            print("Warning: No valid repositories found in CONNECTED_REPOS")
+            print("Warning: No valid repositories found in repos.json")
         else:
             print(f"Successfully parsed {len(repos)} repositories")
 
