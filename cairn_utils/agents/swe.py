@@ -22,7 +22,7 @@ from task_storage import TaskStorage
 
 # Add current directory to sys.path for agent_consts
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from llm_consts import ChatAnthropic
+from llm_consts import ChatAnthropic, ChatOpenAI
 from agent_consts import AgentState, STRUCTURED_SWE_PROMPT
 from thought_logger import AgentLogger
 # from supabase_utils import get_supabase_client, get_other_agents_from_subtask_id
@@ -140,7 +140,7 @@ class SoftwareEngineerAgent:
                 run_id=self.run_id,
             )
 
-        self.llm_client = llm_client or ChatAnthropic(model=model_name)
+        self.llm_client = ChatOpenAI(model=model_name, raw_logging=True) #  llm_client or ChatAnthropic(model=model_name)
 
         # Load fake responses if path is provided
         if fake_calls_path and os.path.exists(fake_calls_path):
@@ -261,7 +261,7 @@ async def main(owner: str = "cairn-dev", repos: List[str] = ["test"]):
     run_id = branch
 
     # Demonstration of a task
-    task_description = "please call the view repositoiry structure tool. in the next iteration the list files tool. then in the next call the web search tool, please (and summarize the results)"
+    task_description = "please call the view repositoiry structure tool, then gneerate an output describing what you saw."
 
     # Create and setup the agent
     agent = SoftwareEngineerAgent()
@@ -273,14 +273,14 @@ async def main(owner: str = "cairn-dev", repos: List[str] = ["test"]):
         live_logging=True,
         run_id=run_id,
         # subtask_id="970f06f8-03de-4e76-9386-6feed924358c",
-        model_name="claude-sonnet-4-20250514",
+        model_name="gpt-4o",
         running_locally=True,
         # other_agents = [{
         #     "run_id": "test_run_SEE_OTHER_AGENTS2",
         #     "description": "add a function to the backend that fetches a string of random emojis",
         #     "repo": "cairn-dev/backend"
         # }]
-        fake_calls_path="testing/fake_anthropic_calls.json"
+        # fake_calls_path="testing/fake_anthropic_calls.json"
     )
 
     # Run the agent and write final state to JSON
